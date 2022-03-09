@@ -9728,6 +9728,60 @@ for (const type of types) {
     Object.defineProperty(type, "prototype", descriptor2);
   }
 }
+var AQIConcernLevels = /* @__PURE__ */ ((AQIConcernLevels2) => {
+  AQIConcernLevels2[AQIConcernLevels2["GOOD"] = 0] = "GOOD";
+  AQIConcernLevels2[AQIConcernLevels2["MODERATE"] = 1] = "MODERATE";
+  AQIConcernLevels2[AQIConcernLevels2["UNHEALTHY_FOR_SENSITIVE_GROUPS"] = 2] = "UNHEALTHY_FOR_SENSITIVE_GROUPS";
+  AQIConcernLevels2[AQIConcernLevels2["UNHEALTHY"] = 3] = "UNHEALTHY";
+  AQIConcernLevels2[AQIConcernLevels2["VERY_UNHEALTHY"] = 4] = "VERY_UNHEALTHY";
+  AQIConcernLevels2[AQIConcernLevels2["HAZARDOUS"] = 5] = "HAZARDOUS";
+  return AQIConcernLevels2;
+})(AQIConcernLevels || {});
+const AQIRef = {
+  [0]: {
+    color: "#00e400",
+    levelText: "\u4F18"
+  },
+  [1]: {
+    color: "yellow",
+    levelText: "\u826F"
+  },
+  [2]: {
+    color: "#ff7e00",
+    levelText: "\u8F7B\u5EA6\u6C61\u67D3"
+  },
+  [3]: {
+    color: "red",
+    levelText: "\u4E2D\u5EA6\u6C61\u67D3"
+  },
+  [4]: {
+    color: "#8f3f97",
+    levelText: "\u91CD\u5EA6\u6C61\u67D3"
+  },
+  [5]: {
+    color: "#7e0023",
+    levelText: "\u4E25\u91CD\u6C61\u67D3"
+  }
+};
+function getAQICategoryByIndex(val) {
+  let level;
+  if (val <= 50) {
+    level = 0;
+  } else if (val <= 100) {
+    level = 1;
+  } else if (val <= 150) {
+    level = 2;
+  } else if (val <= 200) {
+    level = 3;
+  } else if (val <= 300) {
+    level = 4;
+  } else {
+    level = 5;
+  }
+  return __spreadValues({
+    level
+  }, AQIRef[level]);
+}
 var jsxRuntime = { exports: {} };
 var reactJsxRuntime_production_min = {};
 /*
@@ -9844,6 +9898,7 @@ function WeatherPanel({
     const index = (now.dayOfWeek + 7) % 7;
     return weeks[index];
   });
+  const [aqiInfo, setAqiInfo] = require$$0.useState();
   const [date] = useState(() => {
     const now = temporal.Now.plainDateISO();
     return `${now.month}\u6708${now.day}\u65E5`;
@@ -9852,37 +9907,78 @@ function WeatherPanel({
   useEffect(() => {
     sub.current = getWeatherByRegion(cityId).subscribe((res) => {
       setWeather(res.currentWeather);
+      const info = getAQICategoryByIndex(Number(res.currentWeather.air));
+      setAqiInfo(info);
     });
     return () => {
       var _a;
       (_a = sub.current) == null ? void 0 : _a.unsubscribe();
+      sub.current = null;
     };
   }, [cityId]);
-  return /* @__PURE__ */ jsx("div", {
-    className: "w-full h-full text-lg",
-    children: /* @__PURE__ */ jsxs("div", {
+  return /* @__PURE__ */ jsxs("div", {
+    className: "w-full h-full text-lg bg-blue-400 p-4 text-white",
+    children: [/* @__PURE__ */ jsxs("div", {
       className: "flex flex-row",
       children: [/* @__PURE__ */ jsxs("div", {
         className: "",
         children: [/* @__PURE__ */ jsx("span", {
-          className: "text-32",
+          className: "text-32 pr-1 text-2xl",
           children: weather == null ? void 0 : weather.city
         }), /* @__PURE__ */ jsxs("span", {
-          children: ["\u4ECA\u5929: ", weather == null ? void 0 : weather.wea, " ", weather == null ? void 0 : weather.temNight, "~", weather == null ? void 0 : weather.temDay, "\xB0C"]
-        }), /* @__PURE__ */ jsx("span", {
-          children: weather == null ? void 0 : weather.win
+          children: ["\u4ECA\u5929: ", weather == null ? void 0 : weather.wea, " ", weather == null ? void 0 : weather.tem2, "~", weather == null ? void 0 : weather.tem1, "\xB0C"]
         })]
       }), /* @__PURE__ */ jsx("div", {
         className: "flex-1"
       }), /* @__PURE__ */ jsxs("div", {
-        className: "",
+        className: "self-center",
         children: [/* @__PURE__ */ jsx("span", {
           children: date
         }), /* @__PURE__ */ jsx("span", {
+          className: "ml-1",
           children: week
         })]
       })]
-    })
+    }), /* @__PURE__ */ jsxs("div", {
+      className: "flex flex-row items-center",
+      children: [/* @__PURE__ */ jsxs("div", {
+        className: "p-6 text-6xl",
+        children: [weather == null ? void 0 : weather.tem, "\xB0"]
+      }), /* @__PURE__ */ jsxs("div", {
+        className: "",
+        children: [/* @__PURE__ */ jsxs("div", {
+          className: "px-4 rounded-full text-base inline-block",
+          style: {
+            background: aqiInfo == null ? void 0 : aqiInfo.color,
+            color: (aqiInfo == null ? void 0 : aqiInfo.level) === AQIConcernLevels.MODERATE ? "#3600ff" : ""
+          },
+          children: [/* @__PURE__ */ jsx("span", {
+            children: weather == null ? void 0 : weather.air
+          }), /* @__PURE__ */ jsx("span", {
+            className: "ml-1",
+            children: aqiInfo == null ? void 0 : aqiInfo.levelText
+          })]
+        }), /* @__PURE__ */ jsxs("div", {
+          className: "space-x-2 text-base mt-2",
+          children: [/* @__PURE__ */ jsx("span", {
+            children: weather == null ? void 0 : weather.wea
+          }), /* @__PURE__ */ jsx("span", {
+            children: weather == null ? void 0 : weather.win
+          }), /* @__PURE__ */ jsx("span", {
+            children: weather == null ? void 0 : weather.winSpeed
+          })]
+        })]
+      })]
+    }), /* @__PURE__ */ jsxs("div", {
+      className: "mt-2 space-x-4 text-base",
+      children: [/* @__PURE__ */ jsxs("span", {
+        children: ["\u6E7F\u5EA6 ", weather == null ? void 0 : weather.humidity]
+      }), /* @__PURE__ */ jsxs("span", {
+        children: ["\u6C14\u538B ", weather == null ? void 0 : weather.pressure, " (hPa)"]
+      }), /* @__PURE__ */ jsxs("span", {
+        children: ["\u80FD\u89C1\u5EA6 ", weather == null ? void 0 : weather.visibility]
+      })]
+    })]
   });
 }
 export { WeatherPanel };

@@ -5,7 +5,7 @@
 import { GraphQLClient } from 'graphql-request';
 import { Observable, Subject } from 'rxjs';
 var client = null;
-var serverUrl = "";
+var serverUrl = '';
 var afterRequest = function (res) { return res; };
 var errorSubject = new Subject();
 export var requestError$ = errorSubject.asObservable();
@@ -16,7 +16,7 @@ export function initDataStore(options) {
     }
     serverUrl = options.server;
     client = new GraphQLClient(serverUrl, {
-        mode: 'cors'
+        mode: 'cors',
     });
     if (options.headers) {
         client.setHeaders(options.headers);
@@ -44,7 +44,7 @@ export function request(query, variables, headers, meta) {
         }).catch(function (err) {
             errorSubject.next({
                 err: err,
-                meta: meta
+                meta: meta,
             });
         });
     });

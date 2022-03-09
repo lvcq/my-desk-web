@@ -2,16 +2,27 @@ export declare function getWeatherByRegion(region: string): import("rxjs").Obser
     currentWeather: WeatherModel;
 }>;
 export interface WeatherModel {
-    tem: string;
-    cityId: string;
+    air: string;
+    airLevel: string;
+    airTips: string;
     city: string;
+    cityEn: string;
+    cityid: string;
+    country: string;
+    countryEn: string;
+    date: string;
+    humidity: string;
+    observatoryUpdateTime: string;
+    pressure: string;
+    tem: string;
+    tem1: string;
+    tem2: string;
+    visibility: string;
     wea: string;
     weaImg: string;
-    temDay: string;
-    temNight: string;
+    week: string;
     win: string;
-    winSpeed: string;
     winMeter: string;
-    air: string;
+    winSpeed: string;
 }
 //# sourceMappingURL=weather.d.ts.map

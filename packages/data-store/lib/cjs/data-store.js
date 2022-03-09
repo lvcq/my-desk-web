@@ -8,7 +8,7 @@ exports.request = exports.setResponseInterceptor = exports.initDataStore = expor
 var graphql_request_1 = require("graphql-request");
 var rxjs_1 = require("rxjs");
 var client = null;
-var serverUrl = "";
+var serverUrl = '';
 var afterRequest = function (res) { return res; };
 var errorSubject = new rxjs_1.Subject();
 exports.requestError$ = errorSubject.asObservable();
@@ -19,7 +19,7 @@ function initDataStore(options) {
     }
     serverUrl = options.server;
     client = new graphql_request_1.GraphQLClient(serverUrl, {
-        mode: 'cors'
+        mode: 'cors',
     });
     if (options.headers) {
         client.setHeaders(options.headers);
@@ -49,7 +49,7 @@ function request(query, variables, headers, meta) {
         }).catch(function (err) {
             errorSubject.next({
                 err: err,
-                meta: meta
+                meta: meta,
             });
         });
     });
